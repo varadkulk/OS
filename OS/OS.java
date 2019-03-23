@@ -6,8 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-import sun.plugin2.gluegen.runtime.CPU;
-
 class OS {
     CPU c = new CPU();// Object for class CPU
     RAM r = new RAM();// Object for class RAM
