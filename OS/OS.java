@@ -1,5 +1,12 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
+
+import sun.plugin2.gluegen.runtime.CPU;
 
 class OS {
     CPU c = new CPU();// Object for class CPU
@@ -15,6 +22,80 @@ class OS {
         System.out.println("Execution Time = " + seconds + " seconds");// Print execution time in seconds
         System.exit(0);
     }// exit
+
+    public void terminate(int x) {
+        switch (x) {
+        case 0: {
+            System.out.println("No error");
+            break;
+        }
+        case 1: {
+            System.out.println("ERROR:Out of data");
+            break;
+        }
+        case 2: {
+            System.out.println("ERROR:Line Limit Exceeded");
+            break;
+        }
+        case 3: {
+            System.out.println("ERROR:Time Limit Exceeded");
+            break;
+        }
+        case 4: {
+            System.out.println("ERROR:Operation Code Error");
+            break;
+        }
+        case 5: {
+            System.out.println("ERROR:Operand Error");
+            break;
+        }
+        case 6: {
+            System.out.println("ERROR:Invalid Page Fault");
+            break;
+        }
+        case 7: {
+            System.out.println("ERROR:Time Limit Exceeded");
+            System.out.println("ERROR:Operation Code Error");
+            break;
+        }
+        case 8: {
+            System.out.println("ERROR:Time Limit Exceeded");
+            System.out.println("ERROR:Operand Error");
+            break;
+        }
+        default:
+            break;
+        }
+        exit();
+    }// terminate
+
+    public void mos(BufferedReader br, BufferedWriter buffer, int ti, int si, int pi) {
+        if (ti == 0 && si == 1) {
+        } 
+        else if (ti == 0 && si == 2) {
+        } 
+        else if (ti == 0 && si == 3)
+            terminate(0);
+        else if (ti == 2 && si == 1)
+            terminate(3);
+        else if (ti == 2 && si == 2) {
+        } 
+        else if (ti == 2 && si == 3)
+            terminate(0);
+        else if (ti == 0 && pi == 1)
+            terminate(4);
+        else if (ti == 0 && pi == 2)
+            terminate(5);
+        else if (ti == 0 && pi == 3) {
+        } else if (ti == 2 && pi == 1)
+            terminate(7);// 3,5
+        else if (ti == 2 && pi == 2)
+            terminate(8);// 3,6
+        else if (ti == 2 && pi == 3)
+            terminate(3);
+        else if (ti == 0 && si == 0 && pi == 0)
+            terminate(0);
+    }// mos
 
     public String file_input(String text) throws IllegalArgumentException {
         Scanner sc = new Scanner(System.in);
@@ -63,6 +144,8 @@ class OS {
         StringBuilder sb_ni = new StringBuilder();
         sb_ni.append(st.charAt(8));
         sb_ni.append(st.charAt(9));
+        sb_ni.append(st.charAt(10));
+        sb_ni.append(st.charAt(11));
         s_ni = sb_ni.toString();
         ni = Integer.parseInt(s_ni);// number of instructions from input file
         if (ni > 10)
