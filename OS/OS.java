@@ -1,12 +1,8 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
-class OS {
+class OS 
+{
     CPU c = new CPU();// Object for class CPU
     RAM r = new RAM();// Object for class RAM
     static long startTime, endTime, totalTime;
@@ -21,78 +17,46 @@ class OS {
         System.exit(0);
     }// exit
 
-    public void terminate(int x) {
-        switch (x) {
-        case 0: {
-            System.out.println("No error");
-            break;
-        }
-        case 1: {
-            System.out.println("ERROR:Out of data");
-            break;
-        }
-        case 2: {
-            System.out.println("ERROR:Line Limit Exceeded");
-            break;
-        }
-        case 3: {
-            System.out.println("ERROR:Time Limit Exceeded");
-            break;
-        }
-        case 4: {
-            System.out.println("ERROR:Operation Code Error");
-            break;
-        }
-        case 5: {
-            System.out.println("ERROR:Operand Error");
-            break;
-        }
-        case 6: {
-            System.out.println("ERROR:Invalid Page Fault");
-            break;
-        }
-        case 7: {
-            System.out.println("ERROR:Time Limit Exceeded");
-            System.out.println("ERROR:Operation Code Error");
-            break;
-        }
-        case 8: {
-            System.out.println("ERROR:Time Limit Exceeded");
-            System.out.println("ERROR:Operand Error");
-            break;
-        }
-        default:
-            break;
-        }
-        exit();
-    }// terminate
+    /*
+     * public void terminate(int x) { switch (x) { case 0: { break; } case 1: {
+     * System.out.println("ERROR:Out of data"); break; } case 2: {
+     * System.out.println("ERROR:Line Limit Exceeded"); break; } } }// terminate
+     */
 
     public void mos(BufferedReader br, BufferedWriter buffer, int ti, int si, int pi) {
         if (ti == 0 && si == 1) {
-        } 
-        else if (ti == 0 && si == 2) {
-        } 
-        else if (ti == 0 && si == 3)
-            terminate(0);
-        else if (ti == 2 && si == 1)
-            terminate(3);
-        else if (ti == 2 && si == 2) {
-        } 
-        else if (ti == 2 && si == 3)
-            terminate(0);
-        else if (ti == 0 && pi == 1)
-            terminate(4);
-        else if (ti == 0 && pi == 2)
-            terminate(5);
-        else if (ti == 0 && pi == 3) {
-        } else if (ti == 2 && pi == 1)
-            terminate(7);// 3,5
-        else if (ti == 2 && pi == 2)
-            terminate(8);// 3,6
-        else if (ti == 2 && pi == 3)
-            terminate(3);
+        } else if (ti == 0 && si == 2) {
+        } else if (ti == 0 && si == 3)
+            exit();
+        else if (ti == 2 && si == 1) {
+            System.out.println("ERROR:Time Limit Exceeded");
+            exit();
+        } else if (ti == 2 && si == 2) {
+            System.out.println("ERROR:Time Limit Exceeded");
+            exit();
+        } else if (ti == 2 && si == 3)
+            exit();
+        else if (ti == 0 && pi == 1) {
+            System.out.println("ERROR:Operation Code Error");
+            exit();
+        } else if (ti == 0 && pi == 2) {
+            System.out.println("ERROR:Operand Error");
+            exit();
+        } else if (ti == 0 && pi == 3) {
+            System.out.println("ERROR:Invalid Page Fault");
+            exit();
+        } else if (ti == 2 && pi == 1) {
+            System.out.println("ERROR:Time Limit Exceeded");
+            System.out.println("ERROR:Operation Code Error");
+            exit();
+        } else if (ti == 2 && pi == 2) {
+            System.out.println("ERROR:Time Limit Exceeded");
+            System.out.println("ERROR:Operand Error");
+            exit();
+        } else if (ti == 2 && pi == 3)
+            exit();//terminate(3);
         else if (ti == 0 && si == 0 && pi == 0)
-            terminate(0);
+            exit();
     }// mos
 
     public String file_input(String text) throws IllegalArgumentException {
@@ -120,12 +84,12 @@ class OS {
         return true;
     }// check_file_name
 
-    public boolean check_num_as_char(char x) {
+    public boolean check_char_as_num(char x) {
         if (x == '0' || x == '1' || x == '2' || x == '3' || x == '4' || x == '5' || x == '6' || x == '7' || x == '8'
                 || x == '9')
             return false;
         return true;
-    }// check_num_as_char
+    }// check_char_as_num
 
     public void run(File input, FileWriter output) throws IOException {
         c.initialize();// Initialize CPU class
@@ -288,8 +252,8 @@ class OS {
  * System.out.println("ERROR line 1: Start of program should be '$AMJ' ");
  * exit(); }
  * 
- * if(check_num_as_char(st.charAt(4))||check_num_as_char(st.charAt(5))||
- * check_num_as_char(st.charAt(6))||check_num_as_char(st.charAt(7))) {
+ * if(check_char_as_num(st.charAt(4))||check_char_as_num(st.charAt(5))||
+ * check_char_as_num(st.charAt(6))||check_char_as_num(st.charAt(7))) {
  * System.out.println("ERROR line 1: Program number should only contain numbers"
  * ); exit(); }
  * 
@@ -301,7 +265,7 @@ class OS {
  * s_program_number=sb_program_number.toString(); program_number =
  * Integer.parseInt(s_program_number);
  * 
- * if(check_num_as_char(st.charAt(8))||check_num_as_char(st.charAt(9))) {
+ * if(check_char_as_num(st.charAt(8))||check_char_as_num(st.charAt(9))) {
  * System.out.println("ERROR line 1: Program number should only contain numbers"
  * ); exit(); }
  * 
@@ -376,8 +340,8 @@ class OS {
  * System.out.println("ERROR line "+instruction_line+": should start with $END "
  * ); exit(); }
  * 
- * if(check_num_as_char(st.charAt(4))||check_num_as_char(st.charAt(5))||
- * check_num_as_char(st.charAt(6))||check_num_as_char(st.charAt(7))) {
+ * if(check_char_as_num(st.charAt(4))||check_char_as_num(st.charAt(5))||
+ * check_char_as_num(st.charAt(6))||check_char_as_num(st.charAt(7))) {
  * System.out.println("ERROR line "
  * +instruction_line+": Program number should only contain numbers"); exit(); }
  * 
@@ -392,7 +356,7 @@ class OS {
  * if (program_number!=program_number_end) { System.out.println("ERROR line "
  * +instruction_line+": Program number Not matching"); exit(); } } else {
  * 
- * if(check_num_as_char(c.IR[2])||check_num_as_char(c.IR[3])) {
+ * if(check_char_as_num(c.IR[2])||check_char_as_num(c.IR[3])) {
  * System.out.println("Incorrect Operand "); exit(); }
  * 
  * StringBuilder sb_reg = new StringBuilder(); sb_reg.append(c.IR[2]);
