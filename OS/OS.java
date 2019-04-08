@@ -1,11 +1,11 @@
 import java.io.*;
 import java.util.*;
 
-class OS 
-{
+class OS {
     CPU c = new CPU();// Object for class CPU
     RAM r = new RAM();// Object for class RAM
     static long startTime, endTime, totalTime;
+    static int pi, si, ti;
 
     public void exit() {// End of the execution
         double seconds;
@@ -23,7 +23,7 @@ class OS
      * System.out.println("ERROR:Line Limit Exceeded"); break; } } }// terminate
      */
 
-    public void mos(BufferedReader br, BufferedWriter buffer, int ti, int si, int pi) {
+    public void mos(BufferedReader br, BufferedWriter buffer) {
         if (ti == 0 && si == 1) {
         } else if (ti == 0 && si == 2) {
         } else if (ti == 0 && si == 3)
@@ -54,7 +54,7 @@ class OS
             System.out.println("ERROR:Operand Error");
             exit();
         } else if (ti == 2 && pi == 3)
-            exit();//terminate(3);
+            exit();// terminate(3);
         else if (ti == 0 && si == 0 && pi == 0)
             exit();
     }// mos
@@ -103,11 +103,33 @@ class OS
         st = br.readLine();// Line 1 stored
         st = st.trim();// Trim sting to remove spaces at the start and the end
         l = st.length();// Calculate length of first line of input file
+
+        if (st.charAt(0) != '$' || st.charAt(1) != 'A' || st.charAt(2) != 'M' || st.charAt(3) != 'J')
+        // Error checking for $AMJ
+        {
+            System.out.println("ERROR line 1: Start of program should be '$AMJ' ");
+            exit();
+        }
+
+        if (check_char_as_num(st.charAt(4)) || check_char_as_num(st.charAt(5)) || check_char_as_num(st.charAt(6))
+                || check_char_as_num(st.charAt(7))) {
+            System.out.println("ERROR line 1: Program number should only contain numbers");
+            exit();
+        }
+
+        StringBuilder sb_program_number = new StringBuilder();
+        for (int i = 4; i <= 7; i++)
+            sb_program_number.append(st.charAt(i));
+        s_program_number = sb_program_number.toString();
+        program_number = Integer.parseInt(s_program_number);
+
+        if (check_char_as_num(st.charAt(8)) || check_char_as_num(st.charAt(9))) {
+            System.out.println("ERROR line 1: Program number should only contain numbers");
+            exit();
+        }
         StringBuilder sb_ni = new StringBuilder();
-        sb_ni.append(st.charAt(8));
-        sb_ni.append(st.charAt(9));
-        sb_ni.append(st.charAt(10));
-        sb_ni.append(st.charAt(11));
+        for (int i = 8; i <= 11; i++)
+            sb_ni.append(st.charAt(i));
         s_ni = sb_ni.toString();
         ni = Integer.parseInt(s_ni);// number of instructions from input file
         if (ni > 10)
@@ -132,7 +154,6 @@ class OS
                 location++;
             }
             instruction_line++;
-            // location+=10;
         }
         st = br.readLine();
         st = st.trim();
@@ -149,12 +170,17 @@ class OS
                 exit();
             } else {
                 StringBuilder sb_reg = new StringBuilder();
-                sb_reg.append(c.IR[2]);
-                sb_reg.append(c.IR[3]);
+                for (i = 2; i <= 3; i++)
+                    sb_reg.append(c.IR[i]);
                 s_reg = sb_reg.toString();
                 reg = Integer.parseInt(s_reg);
                 int k = 0;
-                if (c.IR[0] == 'G' && c.IR[1] == 'D') {// GD command
+                StringBuilder sb_o = new StringBuilder();
+                for (i = 0; i <= 1; i++)
+                    sb_o.append(c.IR[i]);
+                s_o = sb_o.toString();
+                switch (s_o) {
+                case "GD": {// GD command
                     st = br.readLine();
                     l = st.length();
                     for (int j = 0; j < l; j++) {
@@ -165,57 +191,53 @@ class OS
                             reg++;
                         }
                     }
-                } else {
-                    StringBuilder sb_o = new StringBuilder();
-                    sb_o.append(c.IR[0]);
-                    sb_o.append(c.IR[1]);
-                    s_o = sb_o.toString();
-                    switch (s_o) {
-                    case "PD": {
-                        while (r.ram[reg][k] != '-') {
-                            buffer.write(r.ram[reg][k]);
-                            k++;
-                            if (k == 4) {
-                                k = 0;
-                                reg++;
-                            }
-                        }
-                        buffer.newLine();
-                        break;
-                    }
-                    case "CR": {
-                        for (int j = 0; j < 4; j++) {
-                            if (c.r[j] == r.ram[reg][j])
-                                c.t = true;
-                            else {
-                                c.t = false;
-                                j = 4;
-                            }
-                        }
-                        break;
-                    }
-                    case "LR": {
-                        for (int j = 0; j < 4; j++)
-                            c.r[j] = r.ram[reg][j];
-                        break;
-                    }
-                    case "SR": {
-                        for (int j = 0; j < 4; j++)
-                            r.ram[reg][j] = c.r[j];
-                        break;
-                    }
-                    case "BT": {
-                        c.print();
-                        r.print();
-                        if (c.t)
-                            i = reg - 1;
-                        break;
-                    }
-                    }
+                    break;
                 }
+                case "PD": {
+                    while (r.ram[reg][k] != '-') {
+                        buffer.write(r.ram[reg][k]);
+                        k++;
+                        if (k == 4) {
+                            k = 0;
+                            reg++;
+                        }
+                    }
+                    buffer.newLine();
+                    break;
+                }
+                case "CR": {
+                    for (int j = 0; j < 4; j++) {
+                        if (c.r[j] == r.ram[reg][j])
+                            c.t = true;
+                        else {
+                            c.t = false;
+                            j = 4;
+                        }
+                    }
+                    break;
+                }
+                case "LR": {
+                    for (int j = 0; j < 4; j++)
+                        c.r[j] = r.ram[reg][j];
+                    break;
+                }
+                case "SR": {
+                    for (int j = 0; j < 4; j++)
+                        r.ram[reg][j] = c.r[j];
+                    break;
+                }
+                case "BT": {
+                    c.print();
+                    r.print();
+                    if (c.t)
+                        i = reg - 1;
+                    break;
+                }
+                
             }
         }
-        br.close();
+    }br.close();
+
     }// run
 
     public static void main(String[] args) throws IOException {
@@ -245,29 +267,6 @@ class OS
  * input file
  * 
  * if(l==10)//Check for 1st line {
- * 
- * if
- * (st.charAt(0)!='$'||st.charAt(1)!='A'||st.charAt(2)!='M'||st.charAt(3)!='J')
- * //Error checking for $AMJ {
- * System.out.println("ERROR line 1: Start of program should be '$AMJ' ");
- * exit(); }
- * 
- * if(check_char_as_num(st.charAt(4))||check_char_as_num(st.charAt(5))||
- * check_char_as_num(st.charAt(6))||check_char_as_num(st.charAt(7))) {
- * System.out.println("ERROR line 1: Program number should only contain numbers"
- * ); exit(); }
- * 
- * StringBuilder sb_program_number = new StringBuilder();
- * sb_program_number.append(st.charAt(4));
- * sb_program_number.append(st.charAt(5));
- * sb_program_number.append(st.charAt(6));
- * sb_program_number.append(st.charAt(7));
- * s_program_number=sb_program_number.toString(); program_number =
- * Integer.parseInt(s_program_number);
- * 
- * if(check_char_as_num(st.charAt(8))||check_char_as_num(st.charAt(9))) {
- * System.out.println("ERROR line 1: Program number should only contain numbers"
- * ); exit(); }
  * 
  * StringBuilder sb_ni = new StringBuilder(); sb_ni.append(st.charAt(8));
  * sb_ni.append(st.charAt(9)); s_ni=sb_ni.toString(); ni =

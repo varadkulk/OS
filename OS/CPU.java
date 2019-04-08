@@ -10,10 +10,10 @@ class CPU {
         System.out.print("CPU");
         for (int i = 0; i < 98; i++)
             System.out.print("-");
-        System.out.print("\nRegister:");
+        System.out.print("\nRegister: ");
         for (int i = 0; i < 4; i++)
             System.out.print(r[i]);
-        System.out.print("\nt:" + t + "\nInstruction Counter:" + IC + "\nInstruction Register:");
+        System.out.print("\nToggle: " + t + "\nInstruction Counter: " + IC + "\nInstruction Register: ");
         for (int i = 0; i < 4; i++)
             System.out.print(IR[i]);
         System.out.println();
