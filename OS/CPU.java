@@ -5,10 +5,10 @@ class CPU {
     char[] IR = new char[4];// Instruction Register
 
     void print() {
-        for (int i = 0; i < 98; i++)
+        for (int i = 0; i < 111; i++)
             System.out.print("-");
         System.out.print("CPU");
-        for (int i = 0; i < 98; i++)
+        for (int i = 0; i < 111; i++)
             System.out.print("-");
         System.out.print("\nRegister: ");
         for (int i = 0; i < 4; i++)
@@ -17,7 +17,7 @@ class CPU {
         for (int i = 0; i < 4; i++)
             System.out.print(IR[i]);
         System.out.println();
-        for (int i = 0; i < 199; i++)
+        for (int i = 0; i < 225; i++)
             System.out.print("-");
     }
 

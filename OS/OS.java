@@ -5,7 +5,7 @@ class OS {
     CPU c = new CPU();// Object for class CPU
     RAM r = new RAM();// Object for class RAM
     static long startTime, endTime, totalTime;
-    static int pi, si, ti;
+    int pi = 0, si = 3, ti = 0;
 
     public void exit() {// End of the execution
         double seconds;
@@ -23,20 +23,53 @@ class OS {
      * System.out.println("ERROR:Line Limit Exceeded"); break; } } }// terminate
      */
 
-    public void mos(BufferedReader br, BufferedWriter buffer) {
+    public void mos(BufferedReader br, BufferedWriter buffer, int reg, int k) throws IOException {
         if (ti == 0 && si == 1) {
+            String st = br.readLine();
+            int l = st.length();
+            for (int j = 0; j < l; j++) {
+                r.ram[reg][k] = st.charAt(j);
+                k++;
+                if (k == 4) {
+                    k = 0;
+                    reg++;
+                }
+                si = 3;
+            }
         } else if (ti == 0 && si == 2) {
-        } else if (ti == 0 && si == 3)
+            while (r.ram[reg][k] != '-') {
+                buffer.write(r.ram[reg][k]);
+                k++;
+                if (k == 4) {
+                    k = 0;
+                    reg++;
+                }
+            }
+            buffer.newLine();
+            si = 3;
+        } else if (ti == 0 && si == 3) {
+            buffer.close();
             exit();
-        else if (ti == 2 && si == 1) {
+        } else if (ti == 2 && si == 1) {
             System.out.println("ERROR:Time Limit Exceeded");
             exit();
         } else if (ti == 2 && si == 2) {
+            while (r.ram[reg][k] != '-') {
+                buffer.write(r.ram[reg][k]);
+                k++;
+                if (k == 4) {
+                    k = 0;
+                    reg++;
+                }
+            }
+            buffer.newLine();
+            si = 0;
             System.out.println("ERROR:Time Limit Exceeded");
             exit();
-        } else if (ti == 2 && si == 3)
+        } else if (ti == 2 && si == 3) {
+            buffer.close();
             exit();
-        else if (ti == 0 && pi == 1) {
+        } else if (ti == 0 && pi == 1) {
             System.out.println("ERROR:Operation Code Error");
             exit();
         } else if (ti == 0 && pi == 2) {
@@ -59,7 +92,7 @@ class OS {
             exit();
     }// mos
 
-    public String file_input(String text) throws IllegalArgumentException {
+    public String file_input(String text) {
         Scanner sc = new Scanner(System.in);
         OS OS = new OS();// Object for class OS
         boolean c = true;
@@ -166,43 +199,33 @@ class OS {
             r.print();
             if (c.IR[0] == 'H' && c.IR[1] == 'A' && c.IR[2] == 'L' && c.IR[3] == 'T')// HALT condition
             {
-                buffer.close();
+                mos(br, buffer, 0, 0);
                 exit();
             } else {
                 StringBuilder sb_reg = new StringBuilder();
-                for (i = 2; i <= 3; i++)
-                    sb_reg.append(c.IR[i]);
+                for (int j = 2; j <= 3; j++) {
+                    if (!check_char_as_num(c.IR[j]))
+                        sb_reg.append(c.IR[j]);
+                    else {
+                        pi = 2;
+                        mos(br, buffer, 0, 0);
+                    }
+                }
                 s_reg = sb_reg.toString();
                 reg = Integer.parseInt(s_reg);
                 int k = 0;
                 StringBuilder sb_o = new StringBuilder();
-                for (i = 0; i <= 1; i++)
-                    sb_o.append(c.IR[i]);
+                sb_o.append(c.IR[0]);
+                sb_o.append(c.IR[1]);
                 s_o = sb_o.toString();
                 switch (s_o) {
-                case "GD": {// GD command
-                    st = br.readLine();
-                    l = st.length();
-                    for (int j = 0; j < l; j++) {
-                        r.ram[reg][k] = st.charAt(j);
-                        k++;
-                        if (k == 4) {
-                            k = 0;
-                            reg++;
-                        }
-                    }
-                    break;
+                case "GD": {
+                    si = 1;
+                    mos(br, buffer, reg, k);
                 }
                 case "PD": {
-                    while (r.ram[reg][k] != '-') {
-                        buffer.write(r.ram[reg][k]);
-                        k++;
-                        if (k == 4) {
-                            k = 0;
-                            reg++;
-                        }
-                    }
-                    buffer.newLine();
+                    si = 2;
+                    mos(br, buffer, reg, k);
                     break;
                 }
                 case "CR": {
@@ -233,11 +256,14 @@ class OS {
                         i = reg - 1;
                     break;
                 }
-                
+                default: {
+                    pi = 1;
+                    mos(br, buffer, reg, k);
+                }
+                }
+
             }
         }
-    }br.close();
-
     }// run
 
     public static void main(String[] args) throws IOException {
@@ -250,137 +276,3 @@ class OS {
         OS.run(input, output);
     }// main
 }// class
-/*
- * public void Error(File input)throws IOException {
- * 
- * 
- * c.initialize();//Initialize CPU class r.initialize();//Initialize RAM class
- * 
- * BufferedReader br = new BufferedReader(new
- * FileReader(input));//BufferedReader initialize String
- * st,s_program_number,s_ni,s_reg,s_program_number_end; int
- * l,ni=0,instruction_line=1,max_instruction_line=2,program_number=0,reg,
- * program_number_end;
- * 
- * st = br.readLine();//Line 1 stored st=st.trim();//Trim sting to remove spaces
- * at the start and the end l=st.length();//Calculate length of first line of
- * input file
- * 
- * if(l==10)//Check for 1st line {
- * 
- * StringBuilder sb_ni = new StringBuilder(); sb_ni.append(st.charAt(8));
- * sb_ni.append(st.charAt(9)); s_ni=sb_ni.toString(); ni =
- * Integer.parseInt(s_ni);//number of instructions from input file
- * 
- * if (ni==0) { System.out.println("ERROR line 1: Instrucion number is 0");
- * exit(); } else if (ni>20) {
- * System.out.println("ERROR line 1: Instrucion number is more than 20");
- * exit(); }
- * 
- * if(ni>10) max_instruction_line++; }
- * 
- * else if (l<10) { System.out.println("ERROR line 1: Charaters missing");
- * exit(); }
- * 
- * else { System.out.println("ERROR line 1: Extra Charaters"); exit(); }
- * 
- * instruction_line++;
- * 
- * while(instruction_line<=max_instruction_line)// {
- * 
- * st = br.readLine(); st=st.trim(); l=st.length();
- * 
- * if(l>40) { System.out.println("ERROR line "
- * +instruction_line+": more than 40 characters in one line"); exit(); }
- * 
- * if(l%4!=0) {
- * System.out.println("ERROR line "+instruction_line+": Instruction incomplete"
- * ); exit(); }
- * 
- * if (instruction_line==max_instruction_line ) {
- * 
- * if(instruction_line==3) {
- * 
- * if(((l/4)+10)!=ni) { System.out.println("ERROR line "
- * +instruction_line+": number of instructions not matching to instruction number in line 1"
- * ); exit(); }
- * 
- * }
- * 
- * else if((l/4)!=ni) { System.out.println("ERROR line "
- * +instruction_line+": number of instructions not matching to instruction number in line 1"
- * ); exit(); }
- * 
- * if(st.charAt(l-4)!='H'||st.charAt(l-3)!='A'||st.charAt(l-2)!='L'||st.charAt(l
- * -1)!='T') {
- * System.out.println("ERROR line "+instruction_line+": HALT statement missing"
- * ); exit(); } }
- * 
- * int i=0,k=0;
- * 
- * while(i<l) { for (int x=0;x<4;x++) { if(i<l) { r.ram[k][x]=st.charAt(i); i++;
- * } else x=4; } k++; } instruction_line++; }
- * 
- * st = br.readLine(); st=st.trim(); l=st.length();
- * 
- * if(l!=4||st.charAt(0)!='$'||st.charAt(1)!='D'||st.charAt(2)!='T'||st.charAt(3
- * )!='A') //Error checking for $DTA { System.out.println("ERROR line "
- * +instruction_line+": should contaion only $DTA "); exit(); }
- * 
- * for (int i=0;i<ni;i++) { for(int j=0;j<4;j++) c.IR[j]=r.ram[i][j];
- * c.IC++;//Instruction counter increment
- * 
- * if (c.IR[0]=='H'&&c.IR[1]=='A'&&c.IR[2]=='L'&&c.IR[3]=='T')//HALT condition {
- * 
- * st = br.readLine(); st=st.trim(); l=st.length();
- * 
- * if(l!=8||st.charAt(0)!='$'||st.charAt(1)!='E'||st.charAt(2)!='N'||st.charAt(3
- * )!='D') //Error checking for $DTA {
- * System.out.println("ERROR line "+instruction_line+": should start with $END "
- * ); exit(); }
- * 
- * if(check_char_as_num(st.charAt(4))||check_char_as_num(st.charAt(5))||
- * check_char_as_num(st.charAt(6))||check_char_as_num(st.charAt(7))) {
- * System.out.println("ERROR line "
- * +instruction_line+": Program number should only contain numbers"); exit(); }
- * 
- * StringBuilder sb_program_number_end = new StringBuilder();
- * sb_program_number_end.append(st.charAt(4));
- * sb_program_number_end.append(st.charAt(5));
- * sb_program_number_end.append(st.charAt(6));
- * sb_program_number_end.append(st.charAt(7));
- * s_program_number_end=sb_program_number_end.toString(); program_number_end =
- * Integer.parseInt(s_program_number_end);
- * 
- * if (program_number!=program_number_end) { System.out.println("ERROR line "
- * +instruction_line+": Program number Not matching"); exit(); } } else {
- * 
- * if(check_char_as_num(c.IR[2])||check_char_as_num(c.IR[3])) {
- * System.out.println("Incorrect Operand "); exit(); }
- * 
- * StringBuilder sb_reg = new StringBuilder(); sb_reg.append(c.IR[2]);
- * sb_reg.append(c.IR[3]); s_reg=sb_reg.toString(); reg =
- * Integer.parseInt(s_reg);
- * 
- * int k=0;
- * 
- * if (c.IR[0]=='G'&&c.IR[1]=='D')//GD command { st = br.readLine();
- * l=st.length();
- * 
- * instruction_line++;
- * 
- * for(int j=0;j<l;j++) { if(st.charAt(j)=='-') {
- * System.out.println("Invalid character dectected '-' "); exit(); }
- * 
- * r.ram[reg][k]=st.charAt(j); k++;
- * 
- * if(k==4) { k=0; reg++; } } }
- * 
- * else if
- * ((c.IR[0]=='P'&&c.IR[1]=='D')||(c.IR[0]=='C'||c.IR[0]=='L'||c.IR[0]=='S')&&c.
- * IR[1]=='R');//CR, LR & SR command
- * 
- * else if (c.IR[0]=='B'&&c.IR[1]=='T')//BT command { if(reg<0||reg>=ni) {
- * System.out.println("The instruction is not present "); exit(); } } } }
- * }//Error() method
- */
