@@ -21,31 +21,6 @@ class OS {
 		return r;
 	}// random
 
-	public String file_input(String text) {
-		Scanner sc = new Scanner(System.in);
-		OS OS = new OS();// Object for class OS
-		boolean c = true;
-		String s = "";// Because of stupid errors of initialization
-		while (c) {
-			System.out.print("Enter " + text + " file: ");
-			s = sc.nextLine();
-			c = OS.check_file_name(s);
-		}
-		sc.close();
-		return s;
-	}// file_input
-
-	public boolean check_file_name(String s) {
-		int l = s.length(), i = 0;
-		while (i < l) {
-			if (s.charAt(i) == '.' && i < l - 1)
-				return false;
-			i++;
-		}
-		System.out.println("wrong format!!!");
-		return true;
-	}// check_file_name
-
 	public boolean check_char_as_num(char x) {
 		if (x == '0' || x == '1' || x == '2' || x == '3' || x == '4' || x == '5' || x == '6' || x == '7' || x == '8'
 				|| x == '9')
@@ -194,6 +169,7 @@ class OS {
 		st = br.readLine();// Line 1 stored
 		st = st.trim();// Trim sting to remove spaces at the start and the end
 		l = st.length();// Calculate length of first line of input file
+
 		// Error checking for $AMJ
 		if (st.charAt(0) != '$' || st.charAt(1) != 'A' || st.charAt(2) != 'M' || st.charAt(3) != 'J') {
 			System.out.println("ERROR line 1: Start of program should be '$AMJ' ");
@@ -318,7 +294,7 @@ class OS {
 						if (r.ram[y][0] == '$' && returnframe(0, y / 10) == reg) {
 							x = 11;
 							for (int j = 0; j < 4; j++)
-								r.ram[y+1][j] = c.r[j];
+								r.ram[y + 1][j] = c.r[j];
 						}
 					}
 					if (x == 10) {
@@ -355,8 +331,6 @@ class OS {
 		PrintStream fileOut = new PrintStream("log.vk");
 		System.setOut(fileOut);
 
-		// File input = new File(OS.file_input("input"));// File initialize
-		// FileWriter output = new FileWriter(OS.file_input("output"));
 		File input = new File("input.vk");// File initialize
 		FileWriter output = new FileWriter("output.vk");
 
